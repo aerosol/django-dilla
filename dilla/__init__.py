@@ -2,18 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.utils.importlib import import_module
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_app, get_models
-from django.contrib.webdesign import lorem_ipsum
-from django.db import transaction, IntegrityError
+from django.db import transaction
 import random
-import string
-import decimal
-import sys
 import logging
-import datetime
-import uuid
 
 log = logging.getLogger(__name__)
 
@@ -23,7 +15,7 @@ class AbstractRecord(object):
         self.app = app
         self.model = model
         self.field = field
-        self.manytomany = False
+        self.many_to_many = False
 
     def is_app(self):
         return not self.model and not self.field
@@ -42,7 +34,7 @@ class AbstractRecord(object):
 
     def set_object_property(self, value):
         assert self.obj and self.is_field()
-        if self.manytomany:
+        if self.many_to_many:
             manager = getattr(self.obj, self.field.name)
             manager.add(*value)
         setattr(self.obj, self.field.name, value)
@@ -94,32 +86,41 @@ class SpamRegistry(object):
     def __str__(self):
         return self.__repr__()
 
-spamlib = SpamRegistry()
+spam = SpamRegistry()
 
 class Dilla(object):
 
-    def __init__(self, apps = None, cycles = 1, use_coin = True, spamlib = None):
-        # TODO dynamic imports
-        from dilla import spammers
+    def __init__(self, apps = None, cycles = 1, use_coin = True, spamlibs = None):
+        if spamlibs is None:
+            spamlibs = getattr(settings, 'DILLA_SPAMLIBS', [])
+        spamlibs.insert(0, 'dilla.spammers')
+        for lib in spamlibs:
+            log.debug('Importing spamlib %s' % lib)
+            self._dyn_import(lib)
+
         app_list = apps or getattr(settings, 'DILLA_APPS', None)
         assert app_list is not None, \
         "Either you have not provided Dilla.apps parameter or settings.DILLA_APPS \
 is missing"
+        self.spam_registry = spam
         self.apps = app_list
         self.cycles = cycles
         self.use_coin = use_coin
         self.appmodels = {}
-        self.spamlib = spamlib
+        self.current = None
+        self.rows_affected = 0
+        self.fields_spammed = 0
+        self.fields_omitted = 0
 
     def discover_models(self):
         apps = [(app, get_app(app)) for app in self.apps]
         for app_name, app_module in apps:
             self.appmodels[app_name] = []
             self.appmodels[app_name].extend(get_models(app_module))
-        log.debug('self.appmodels: %s' % self.appmodels)
+        log.debug('Preparing to spam following models: %s' % self.appmodels)
 
     def find_spam_handler(self, record):
-        strict_handler = self.spamlib.get_handler(record, strict = True)
+        strict_handler = self.spam_registry.get_handler(record, strict = True)
         if strict_handler:
             return strict_handler
 
@@ -128,44 +129,62 @@ is missing"
         if record.field.choices:
             return lambda x: random.choice (x.choices)[0]
 
-        return self.spamlib.get_handler(record, strict = False)
+        return self.spam_registry.get_handler(record, strict = False)
 
     def spam(self, record):
         log.debug('[ --> Spam %s ]' % record)
+        self.current = record
 
         if record.is_app():
             for model in self.appmodels.get( str(record) ):
-                record.model = model
-                record.create_object()
-                record.field = None
-                self.spam(record)
+                    record.model = model
+                    record.create_object()
+                    record.field = None
+                    self.spam(record)
 
         elif record.is_model():
             for field in [field for field \
                     in record.model._meta.fields \
                     if not field.auto_created]:
 
-                record.manytomany = False
+                record.many_to_many = False
                 record.field = field
                 self.spam(record)
             record.save()
+            self.rows_affected += 1
 
             # after the record is saved, it is safe to fill
             # ManyToMany fields if any
 
             for field in record.model._meta.many_to_many:
                 record.field = field
-                record.manytomany = True
+                record.many_to_many = True
                 self.spam(record)
 
         elif record.is_field():
             if record.field.blank and (self.use_coin and self._coin_toss()):
+                self.fields_omitted +=1
                 log.debug("Using coin -- simon says, skip this record.")
                 return
 
             handler = self.find_spam_handler(record)
             if handler is not None:
-                record.set_object_property( handler(record.field) )
+                value = handler(record.field)
+                if record.field.unique:
+                    manager = record.model._default_manager
+
+                    # handlers may not return random values,
+                    # try 5 times before giving up
+
+                    for i in range(5):
+                        try:
+                            match = manager.get(**{ record.field.name : value})
+                            value = handler(record.field)
+                        except record.model.DoesNotExist, e:
+                            break
+
+                record.set_object_property(value)
+                self.fields_spammed +=1
             else:
                 log.warn("Handler not found for %s" % record)
 
@@ -173,13 +192,28 @@ is missing"
     def run(self):
         try:
             self.discover_models()
-            for app in self.appmodels.keys():
-                self.spam(AbstractRecord(app))
+
+            for cycle in range(self.cycles):
+                log.info("spamming cycle: %d/%d" % (cycle+1, self.cycles))
+                for app in self.appmodels.keys():
+                    self.spam(AbstractRecord(app))
+
             transaction.commit()
+
+            return ( len(self.apps),
+                     self.rows_affected,
+                     self.fields_spammed,
+                     self.fields_omitted )
+
         except Exception, e:
             log.critical("%s" % e)
-            log.critical(sys.exc_info())
             transaction.rollback()
+            raise
+
+    def _dyn_import(self, name):
+        mod, spamlib = name.rsplit('.', 1)
+        m = __import__(mod, fromlist=[spamlib])
+        return getattr(m, spamlib)
 
     def _coin_toss(self):
         return bool(random.randrange(2))

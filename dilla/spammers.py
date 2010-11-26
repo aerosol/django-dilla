@@ -1,28 +1,69 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import random
-from dilla import spamlib
+from django.conf import settings
 from django.contrib.webdesign import lorem_ipsum
+from dilla import spam
+import random
+import os
+import decimal
 import logging
 log = logging.getLogger('dilla')
 
-@spamlib.global_handler('ManyToManyField')
-def generic_manytomany(field):
-    return random_fk(field, 5)
+dictionary = getattr(settings, 'DICTIONARY', "/usr/share/dict/words")
+if os.path.exists(dictionary) and not getattr(settings, 'DILLA_USE_LOREM_IPSUM', False):
+    d = open(dictionary, "r").readlines()
+    _random_words = lambda n: " ".join([ random.choice(d).lower().rstrip() for i in range(n)])
+    _random_paragraph = lambda: _random_words(30).capitalize()
+    _random_paragraphs = lambda n: ".\n".join( [_random_paragraph() for i in range(n)] )
+else:
+    _random_words = lorem_ipsum.words
+    _random_paragraphs = lorem_ipsum.paragraphs
 
-@spamlib.global_handler('CharField')
-def random_chars(field):
+@spam.global_handler('CharField')
+def random_words(field):
     max_length = field.max_length
-    suffix = ''
-    #if field.unique:
-        #suffix = self._uuid()
-    words = lorem_ipsum.words(random.randint(2,3), common = False)
-    value = "%s%s" % ( words, suffix )
-    if max_length and len(value) > max_length:
-        return value[max_length:]
-    return value
+    words = _random_words(3)
+    if max_length and len(words) > max_length:
+        return words[max_length:]
+    return words
 
-@spamlib.global_handler('ForeignKey')
+@spam.global_handler('TextField')
+def random_text(field):
+    return _random_paragraphs(4)
+
+@spam.global_handler('IPAddressField')
+def random_ip(field):
+    return ".".join( [ str(random.randrange(0,255)) for i in range(0,4) ] )
+
+@spam.global_handler('SlugField')
+def random_slug(field):
+    return random_words(field).replace(" ", "-")
+
+@spam.global_handler('BooleanField')
+def random_bool(field):
+    return bool(random.randint(0,1))
+
+@spam.global_handler('EmailField')
+def random_email(field):
+    return "%s@%s.%s" % ( \
+             _random_words(1),
+             _random_words(1),
+             random.choice( ["com", "org", "net", "gov", "eu"] )
+             )
+
+@spam.global_handler('IntegerField')
+def random_int(field):
+    return random.randint(-1000, 1000)
+
+@spam.global_handler('DecimalField')
+def random_decimal(field):
+    return decimal.Decimal( str(random.random()+random.randint(1,20)) )
+
+@spam.global_handler('PositiveIntegerField')
+def random_posint(field):
+    return random.randint(0,1000)
+
+@spam.global_handler('ForeignKey')
 def random_fk(field, slice = None):
     Related = field.rel.to
     log.debug('Trying to find related object: %s' % Related)
@@ -40,11 +81,15 @@ def random_fk(field, slice = None):
     except Exception, e:
         log.critical(str(e))
 
-@spamlib.strict_handler('testapp.Book.title')
-def set_title(field):
-    return "The Satanic Bible"
+@spam.global_handler('ManyToManyField')
+def random_manytomany(field):
+    return random_fk(field, random.randint(1,5))
 
-@spamlib.global_handler('PositiveIntegerField')
-def meaning_of_life(field):
-    return 42
+#@spam.strict_handler('testapp.Book.isbn')
+#def test_unique(field):
+    #return 42
+
+#@spam.global_handler('PositiveIntegerField')
+#def meaning_of_life(field):
+    #return 42
 

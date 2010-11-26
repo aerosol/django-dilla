@@ -1,4 +1,6 @@
 # Django settings for example_app project.
+import sys
+sys.path.append('/Users/adam/dev/_virtualenvs/lib-shared')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -13,8 +15,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'dilla',                      # Or path to database file if using sqlite3.
-        'USER': 'scott',                      # Not used with sqlite3.
-        'PASSWORD': 'tiger',                  # Not used with sqlite3.
+        'USER': 'postgres',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -152,8 +154,12 @@ LOGGING = {
             'propagate': True,
         },
         'dilla': {
-            'handlers': ['console', 'mail_admins'],
+            'handlers': ['console'],
             'level': 'DEBUG',
         }
     }
 }
+
+DICTIONARY = "/usr/share/dict/words"
+DILLA_USE_LOREM_IPSUM = False
+DILLA_SPAMLIBS = ['dilla.custom_spammers',]
