@@ -64,7 +64,7 @@ def random_email(field):
 
 @spam.global_handler('IntegerField')
 def random_int(field):
-    return random.randint(-1000, 1000)
+    return random.randint(-10000, 10000)
 
 
 @spam.global_handler('DecimalField')
@@ -74,7 +74,7 @@ def random_decimal(field):
 
 @spam.global_handler('PositiveIntegerField')
 def random_posint(field):
-    return random.randint(0, 1000)
+    return random.randint(0, 10000)
 
 
 @spam.global_handler('ForeignKey')

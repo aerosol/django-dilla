@@ -9,6 +9,9 @@ import logging
 
 log = logging.getLogger(__name__)
 
+__author__ = "Adam Rutkowski <adam@mtod.org>"
+__version__ = "0.1RC"
+
 
 class AbstractRecord(object):
     """The class provides a little abstraction layer over either \
@@ -131,7 +134,8 @@ spam = SpamRegistry()
 
 
 class Dilla(object):
-    """Dilla is a multi-purpose general testing tool for automated
+    """
+    Dilla is a multi-purpose general testing tool for automated
     database spamming, intented to use with projects built on top of Django,
     populating data within any number of internal applications.
 
