@@ -192,6 +192,7 @@ class Dilla(object):
 
         # if there's no strict handler defined for a choice field,
         # use generic random
+
         if record.field.choices:
             return lambda x: random.choice(x.choices)[0]
 

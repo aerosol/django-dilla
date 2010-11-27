@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.contrib.webdesign import lorem_ipsum
 from dilla import spam
@@ -7,6 +8,7 @@ import random
 import os
 import decimal
 import logging
+
 log = logging.getLogger('dilla')
 
 dictionary = getattr(settings, 'DICTIONARY', "/usr/share/dict/words")
