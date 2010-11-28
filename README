@@ -7,35 +7,42 @@ Example settings.py
 -------------------
 
   INSTALLED_APPS = ( ...
+      'myapp',
       'dilla'
   )
 
   DICTIONARY = "/usr/share/dict/words"
-  DILLA_USE_LOREM_IPSUM = False
-  DILLA_SPAMLIBS = ['myapp.my_custom_spammers']
+  DILLA_USE_LOREM_IPSUM = False # set to True ignores dictionary
+  DILLA_SPAMLIBS = ['myapp.my_custom_spammers'] # optional
   DILLA_APPS = ['myapp', 'auth']
 
 
 Example usage & output
 ----------------------
 
-   ./manage.py run_dilla --cycles=100
+   $ ./manage.py run_dilla --cycles=100
    Dilla is going to spam your database. Do you wish to proceed? (Y/N)Y
    Dilla finished!
-        2 app(s) spammed 900 row(s) affected,         2498 field(s) filled, 502 field(s) ommited.
+        2 app(s) spammed 900 row(s) affected, 2498 field(s) filled, 502 field(s) ommited.
+   $
+
+You may configure 'dilla' logger to get slightly more verbose output.
 
 
 TODO
 ----
 
-    * Support for *all* field datatypes
-    * Image/file generators
+    * PyPI
+    * Support for unique_for_date, unique_for_month, unique_for_year
+    * Support for XMLField, CommaSeparatedIntegerField
+    * Test/Support for OneToOneField
 
 
 Additional Info
 ---------------
 
 This project is PEP8 compilant.
-Fork me: https://github.com/aerosol/django-dilla
+``identicon`` submodule copyrighted by Shin Adachi.
+Fork me on GitHub: http://aerosol.github.com/django-dilla/
 License: Free as in freedom, as long as you keep the credits in the source.
 
