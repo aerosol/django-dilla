@@ -140,21 +140,21 @@ def random_file(field):
     using ImageFields, there is no point in providing
     alternate routine other than lazy import.
     """
+
     destination = os.path.join(settings.MEDIA_ROOT, field.upload_to)
 
     def _random_image(field):
-        try:
-            from dilla.identicon import identicon
-            name = "dilla_%s.png" % random_slug(field)
-            icon = identicon.render_identicon( \
-                    random.randint(5 ** 5, 10 ** 10), \
-                    random.randint(64, 800))
-            icon.save(os.path.join(destination, name), 'PNG')
-            return name
-        except Exception, e:
-            print e
+        log.debug("Generating identicon image")
+        from dilla.identicon import identicon
+        name = "dilla_%s.png" % random_slug(field)
+        icon = identicon.render_identicon( \
+                random.randint(5 ** 5, 10 ** 10), \
+                random.randint(64, 800))
+        icon.save(os.path.join(destination, name), 'PNG')
+        return name
 
     def _random_textfile(field):
+        log.debug("Generating text file")
         name = "dilla_%s.txt" % random_slug(field)
         f = open(os.path.join(destination, name), "w+")
         f.write(_random_words(10))
@@ -164,10 +164,8 @@ def random_file(field):
     try:
         from django.db.models import ImageField
         if isinstance(field, ImageField):
-            print 'IMAGE'
             return _random_image(field)
-        else:
-            return _random_textfile(field)
+        return _random_textfile(field)
     except ImportError, e:
         return _random_textfile(field)
 
