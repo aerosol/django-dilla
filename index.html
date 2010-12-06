@@ -28,7 +28,7 @@
     a { color: #eee; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic; color: #eee; }
     .download { float: right; }
-		pre { background: #000; color: #eee; padding: 15px;}
+		pre { font-family: 'Inconsolata', Courier, monospace; background: #000; color: #777; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
 	</style>
@@ -58,20 +58,74 @@
 database spamming, intented to use with projects built on top of Django,
 populating data within any number of internal applications.</p>
 <p>It will, simply, fill your models with lots of nicely generated random data. Not to mention, that you can easily write your own spammers for certain fields or field types. Oooooh yeah!</p>
+<h2>What for?</h2>
+<ul>
+<li>Quickly generate data fixtures, that almost make sense</li>
+<li>Check your app behaviour with lots of data</li>
+<li>Test your model validators, etc.</li>
+<li>Ideas?</li>
+</ul>
+<h2>Use cases</h2>
+<ol>
+    <li><a href="#download">Download</a></li>
+    <li><pre>python setup.py install</pre>
+    </li>
+    <li>settings.py additions:<br/><pre>INSTALLED_APPS = ( ...
+      'myapp',
+      'dilla'
+  )
+
+DICTIONARY = "/usr/share/dict/words"
+DILLA_USE_LOREM_IPSUM = False # set to True ignores dictionary
+DILLA_APPS = ['myapp', 'auth']
+
+
+</pre></li>
+<li>Write some custom spammers if you need any, i.e.:
+<pre>
+# my_custom_spamlib.py
+
+from dilla import spam
+import string
+import random
+
+@spam.global_handler('CharField') # field.get_internal_type()
+def get_chars(field):
+    return random.choice(string.ascii_letters)
+
+@spam.strict_handler('myapp.Article.title')
+def get_blog_post_title(field):
+    return random.choice(string.ascii_letters)
+</pre>
+and make sure Dilla will use them (settings.py again):
+<pre>
+DILLA_SPAMLIBS = ['myapp.my_custom_spamlib']
+</pre>
+</li>
+<li>Time to spam!
+<pre>
+$ ./manage.py run_dilla --cycles=100
+Dilla is going to spam your database. Do you wish to proceed? (Y/N)Y
+Dilla finished!
+    2 app(s) spammed 900 row(s) affected, 2498 field(s) filled, \
+    502 field(s) ommited.
+$
+</pre>
+
+</li>
+</ol>
 <h2>Dependencies</h2>
 <p>Existing <a href="http://djangoproject.com/download">Django</a> project</p>
-<p><a href="https://github.com/aerosol/identicon">Identicon</a> (bundled as git submodule)</p>
-<h2>Install</h2>
-<p>see <a href="https://github.com/aerosol/django-dilla/blob/master/README">README</a></p>
+<p><a href="https://github.com/aerosol/identicon">Identicon</a> (optional as ImageField spammer component)</p>
 <h2>License</h2>
-<p>Free as in freedom. Please keep the credits in the source code.</p>
+<p><a href="https://github.com/aerosol/django-dilla/blob/master/LICENSE"/>BSD</a>.</p>
 <h2>Authors</h2>
 <p>Adam Rutkowski (adam at mtod org)<br/><br/>      </p>
 <h2>Contact</h2>
 <p>Adam Rutkowski (adam at mtod org)<br/>      </p>
 
 
-    <h2>Download</h2>
+<h2><a name="download">Download</a></h2>
     <p>
       You can download this project in either
       <a href="http://github.com/aerosol/django-dilla/zipball/master">zip</a> or
