@@ -2,40 +2,19 @@ Dilla is a multi-purpose general testing tool for automated
 database spamming, intented to use with projects built on top of Django,
 populating data within any number of internal applications.
 
-
-Example settings.py
--------------------
-
-  INSTALLED_APPS = ( ...
-      'myapp',
-      'dilla'
-  )
-
-  DICTIONARY = "/usr/share/dict/words"
-  DILLA_USE_LOREM_IPSUM = False # set to True ignores dictionary
-  DILLA_SPAMLIBS = ['myapp.my_custom_spammers'] # optional
-  DILLA_APPS = ['myapp', 'auth']
-
-
-Example usage & output
-----------------------
-
-   $ ./manage.py run_dilla --cycles=100
-   Dilla is going to spam your database. Do you wish to proceed? (Y/N)Y
-   Dilla finished!
-        2 app(s) spammed 900 row(s) affected, 2498 field(s) filled, 502 field(s) ommited.
-   $
-
-You may configure 'dilla' logger to get slightly more verbose output.
-
+INSTALLATION/USAGE & MORE
+-------------------------
+http://aerosol.github.com/django-dilla/
 
 TODO
 ----
 
-    * PyPI
+    * regster @ PyPI (currently old crappy code blocks the spot)
     * Support for unique_for_date, unique_for_month, unique_for_year
     * Support for XMLField, CommaSeparatedIntegerField
     * Test/Support for OneToOneField
+    * Optimize everything
+    * Contrib spamlibs for GeoDjango etc.
 
 
 Additional Info
