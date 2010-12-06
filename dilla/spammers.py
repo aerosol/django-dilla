@@ -172,7 +172,7 @@ def random_file(field):
 
 
 @spam.global_handler('ForeignKey')
-def random_fk(field, slice=None):
+def random_fk(field, limit=None):
     Related = field.rel.to
     log.debug('Trying to find related object: %s' % Related)
     try:
@@ -181,8 +181,8 @@ def random_fk(field, slice=None):
             log.debug('Field %s has limited choices. \
                     Applying to query.' % field)
             query.filter(**field.rel.limit_choices_to)
-        if slice:
-            return query[:slice]
+        if limit:
+            return query[:limit]
         return query[0]
     except IndexError, e:
         log.info('Could not find any related objects for %s' % field.name)

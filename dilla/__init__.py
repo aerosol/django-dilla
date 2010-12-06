@@ -23,6 +23,7 @@ class AbstractRecord(object):
         self.model = model
         self.field = field
         self.many_to_many = False
+        self.obj = None
 
     def is_app(self):
         return not self.model and not self.field
@@ -206,15 +207,15 @@ class Dilla(object):
 
         if record.is_app():
             for model in self.appmodels.get(str(record)):
-                    record.model = model
-                    record.create_object()
-                    record.field = None
-                    self.spam(record)
+                record.model = model
+                record.create_object()
+                record.field = None
+                self.spam(record)
 
         elif record.is_model():
             for field in [field for field \
-                    in record.model._meta.fields \
-                    if not field.auto_created]:
+                in record.model._meta.fields \
+                if not field.auto_created]:
 
                 record.many_to_many = False
                 record.field = field
