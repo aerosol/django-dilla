@@ -10,7 +10,7 @@ import logging
 log = logging.getLogger(__name__)
 
 __author__ = "Adam Rutkowski <adam@mtod.org>"
-__version__ = "0.1RC"
+__version__ = "0.2dev"
 
 
 class AbstractRecord(object):
@@ -48,7 +48,7 @@ class AbstractRecord(object):
         return self.obj
 
     def save(self):
-        self.obj.save()
+        self.obj.save(force_insert = True)
 
     def __repr__(self):
         if self.is_app():
@@ -266,9 +266,6 @@ class Dilla(object):
                 log.info("spamming cycle: %d/%d" % (cycle + 1, self.cycles))
                 for app in self.appmodels.keys():
                     self.spam(AbstractRecord(app))
-
-            transaction.commit()
-
             return (len(self.apps),
                      self.rows_affected,
                      self.fields_spammed,

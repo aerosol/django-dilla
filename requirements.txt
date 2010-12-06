@@ -1,0 +1,2 @@
+git+git://github.com/aerosol/identicon.git#egg=identicon
+

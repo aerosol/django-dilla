@@ -44,5 +44,5 @@ Additional Info
 This project is PEP8 compilant.
 ``identicon`` submodule copyrighted by Shin Adachi.
 Fork me on GitHub: http://aerosol.github.com/django-dilla/
-License: Free as in freedom, as long as you keep the credits in the source.
+License: BSD License
 

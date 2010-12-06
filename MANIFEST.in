@@ -1,0 +1,7 @@
+README
+LICENSE
+MANIFEST.in
+setup.py
+dilla/__init__.py
+dilla/spammers.py
+requirements.txt
