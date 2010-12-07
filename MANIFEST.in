@@ -4,4 +4,7 @@ MANIFEST.in
 setup.py
 dilla/__init__.py
 dilla/spammers.py
+dilla/management/__init__.py
+dilla/management/commands/__init__.py
+dilla/management/commands/run_dilla.py
 requirements.txt
