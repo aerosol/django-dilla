@@ -129,7 +129,7 @@ def random_file(field):
         name = "dilla_%s.png" % random_slug(field)
         icon = identicon.render_identicon( \
                 random.randint(5 ** 5, 10 ** 10), \
-                random.randint(64, 800))
+                random.randint(64, 250))
         icon.save(os.path.join(destination, name), 'PNG')
         return name
 
