@@ -10,7 +10,6 @@ import os
 import decimal
 import logging
 import datetime
-import time
 
 log = logging.getLogger('dilla')
 
@@ -126,7 +125,7 @@ def random_file(field):
 
     def _random_image(field):
         log.debug("Generating identicon image")
-        from dilla.identicon import identicon
+        from identicon import identicon
         name = "dilla_%s.png" % random_slug(field)
         icon = identicon.render_identicon( \
                 random.randint(5 ** 5, 10 ** 10), \
@@ -148,6 +147,7 @@ def random_file(field):
             return _random_image(field)
         return _random_textfile(field)
     except ImportError, e:
+        log.warn(e)
         return _random_textfile(field)
 
 

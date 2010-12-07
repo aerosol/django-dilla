@@ -1,3 +1,0 @@
-[submodule "dilla/identicon"]
-	path = dilla/identicon
-	url = git@github.com:aerosol/identicon.git

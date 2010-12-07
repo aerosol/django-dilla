@@ -1,4 +1,6 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
+from distribute_setup import use_setuptools
+use_setuptools()
 
 
 setup(
@@ -6,12 +8,16 @@ setup(
     version='0.2dev',
     author='Adam Rutkowski',
     author_email='adam@mtod.org',
-    packages=['dilla', 'dilla.management', 'dilla.management.commands'],
+    packages=find_packages(),
     url='http://aerosol.github.com/django-dilla/',
     license='BSD License',
     description='Ubercool database spammer for Django',
     long_description=open('README').read(),
-    download_url='https://github.com/aerosol/django-dilla/tarball/master',
+    download_url='https://github.com/aerosol/identicon',
+    install_requires=['identicon'],
+    dependency_links = [
+        'https://github.com/aerosol/identicon/tarball/master#egg=identicon'
+    ],
     classifiers = [
                    'Framework :: Django',
                    'Intended Audience :: Developers',
