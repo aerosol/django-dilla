@@ -267,7 +267,7 @@ class Dilla(object):
                 log.info("spamming cycle: %d/%d" % (cycle + 1, self.cycles))
                 for app in self.appmodels.keys():
                     self.spam(AbstractRecord(app))
-                transaction.commit()
+            transaction.commit()
             return (len(self.apps),
                      self.rows_affected,
                      self.fields_spammed,
