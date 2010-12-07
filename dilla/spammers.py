@@ -105,29 +105,9 @@ def random_datetime(field):
     decorators instead of three handlers here.
     """
 
-    # This was actually pretty tricky and I wonder if it could be simplified.
-    # 1. next_month and prev_month represented as datetime.date
-
-    next_month = (datetime.date.today() + datetime.timedelta(365 / 12))
-    prev_month = (datetime.date.today() - datetime.timedelta(365 / 12))
-
-    # 2. convert these two to unix timestamps
-
-    ts1 = time.mktime(next_month.timetuple())
-    ts2 = time.mktime(prev_month.timetuple())
-    seed = random.random()
-
-    # 3. substract earlier from later
-    # 4. multiply it by random float in range 0..1
-    # 5. add earlier time
-    # 6. get the timetuple
-
-    random_struct = time.localtime(ts2 + seed * (ts1 - ts2))
-
-    # 7. convert timetumple to a datetime object by converting it again
-    #    to unix timestamp and voila
-
-    return datetime.datetime.fromtimestamp(time.mktime(random_struct))
+    # 1 month ~= 30d ~= 720h ~= 43200min
+    random_minutes = random.randint(-43200, 43200)
+    return datetime.datetime.now() + datetime.timedelta(minutes=random_minutes)
 
 
 @spam.global_handler('FileField') # ImageField's internal type is FileField
