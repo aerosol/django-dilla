@@ -6,7 +6,7 @@ setup(
     version='0.2dev',
     author='Adam Rutkowski',
     author_email='adam@mtod.org',
-    packages=['dilla',],
+    packages=['dilla', 'dilla.management'],
     url='http://aerosol.github.com/django-dilla/',
     license='BSD License',
     description='Ubercool database spammer for Django',
