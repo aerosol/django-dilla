@@ -28,6 +28,8 @@ else:
     _random_words = lorem_ipsum.words
     _random_paragraphs = lorem_ipsum.paragraphs
 
+log.warn("USING DICTIONARY!!!! %s" % dictionary)
+
 
 @spam.global_handler('CharField')
 def random_words(field):

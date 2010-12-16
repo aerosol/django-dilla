@@ -49,7 +49,7 @@ class AbstractRecord(object):
         return self.obj
 
     def save(self):
-        self.obj.save(force_insert=True)
+        self.obj.save()
 
     def __repr__(self):
         if self.is_app():
