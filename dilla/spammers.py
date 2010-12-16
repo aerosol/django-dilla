@@ -28,8 +28,6 @@ else:
     _random_words = lorem_ipsum.words
     _random_paragraphs = lorem_ipsum.paragraphs
 
-log.warn("USING DICTIONARY!!!! %s" % dictionary)
-
 
 @spam.global_handler('CharField')
 def random_words(field):
@@ -57,7 +55,8 @@ def random_ip(field):
 
 @spam.global_handler('SlugField')
 def random_slug(field):
-    return random_words(field).replace(" ", "-")
+    slug = random_words(field).replace(" ", "-")
+    return ''.join(ch for ch in slug if ch.isalnum() or ch == '-')
 
 
 @spam.global_handler('NullBooleanField')
