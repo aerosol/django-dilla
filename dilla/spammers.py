@@ -38,8 +38,8 @@ def random_words(field):
 
     max_length = field.max_length
     words = _random_words(3)
-    if max_length and len(words) > max_length:
-        return words[max_length:]
+    if max_length < len(words):
+        return words[:max_length]
     return words
 
 
