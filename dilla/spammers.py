@@ -132,7 +132,7 @@ def random_file(field):
                 random.randint(5 ** 5, 10 ** 10), \
                 random.randint(64, 250))
         icon.save(os.path.join(destination, name), 'PNG')
-        return name
+        return os.path.join(field.upload_to, name)
 
     def _random_textfile(field):
         log.debug("Generating text file")
@@ -140,7 +140,7 @@ def random_file(field):
         f = open(os.path.join(destination, name), "w+")
         f.write(_random_words(10))
         f.close()
-        return name
+        return os.path.join(field.upload_to, name)
 
     try:
         from django.db.models import ImageField
