@@ -23,10 +23,10 @@ if os.path.exists(dictionary) and \
             for i in range(n)])
     _random_paragraph = lambda: _random_words(30).capitalize()
     _random_paragraphs = lambda n: \
-            ".\n".join([_random_paragraph() for i in range(n)])
+            ".\n\n".join([_random_paragraph() for i in range(n)])
 else:
     _random_words = lorem_ipsum.words
-    _random_paragraphs = lorem_ipsum.paragraphs
+    _random_paragraphs = lambda n: ".\n\n".join(lorem_ipsum.paragraphs(n))
 
 
 @spam.global_handler('CharField')
