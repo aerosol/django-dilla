@@ -1,15 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from django.conf import settings
-from django.contrib.webdesign import lorem_ipsum
-from django.db.models import URLField
-from dilla import spam
 import random
 import os
 import decimal
 import logging
 import datetime
+
+from django.conf import settings
+from django.contrib.webdesign import lorem_ipsum
+from django.core.files.base import ContentFile
+from django.db.models import URLField
+
+from dilla import spam
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 log = logging.getLogger('dilla')
 
@@ -45,7 +52,10 @@ def random_words(field):
 
 @spam.global_handler('TextField')
 def random_text(field):
-    return _random_paragraphs(4)
+    text_content = _random_paragraphs(4)
+    if field.max_length:
+        text_content = text_content[:field.max_length]
+    return text_content
 
 
 @spam.global_handler('IPAddressField')
@@ -68,8 +78,8 @@ def random_bool(field):
 @spam.global_handler('EmailField')
 def random_email(field):
     return "%s@%s.%s" % ( \
-             _random_words(1),
-             _random_words(1),
+             _random_words(1).replace("'",""),
+             _random_words(1).replace("'",""),
              random.choice(["com", "org", "net", "gov", "eu"])
              )
 
@@ -131,8 +141,12 @@ def random_file(field):
         icon = identicon.render_identicon( \
                 random.randint(5 ** 5, 10 ** 10), \
                 random.randint(64, 250))
-        icon.save(os.path.join(destination, name), 'PNG')
-        return os.path.join(field.upload_to, name)
+        # using storage
+        tmp_file = StringIO()
+        icon.save(tmp_file, 'PNG')
+        name = os.path.join(field.upload_to, name)
+        saved_name = field.storage.save(name, ContentFile(tmp_file.getvalue()))
+        return saved_name
 
     def _random_textfile(field):
         log.debug("Generating text file")
