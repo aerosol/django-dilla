@@ -123,6 +123,7 @@ def random_file(field):
     """
 
     destination = os.path.join(field.storage.location, field.upload_to)
+    if not os.path.exists(destination): os.makedirs(destination)
 
     def _random_image(field):
         log.debug("Generating identicon image")
