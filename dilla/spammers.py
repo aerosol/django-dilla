@@ -132,7 +132,9 @@ def random_file(field):
     alternate routine other than lazy import.
     """
 
-    destination = os.path.join(settings.MEDIA_ROOT, field.upload_to)
+    destination = os.path.join(field.storage.location, field.upload_to)
+    if not os.path.exists(destination):
+        os.makedirs(destination)
 
     def _random_image(field):
         log.debug("Generating identicon image")
