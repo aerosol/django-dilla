@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.webdesign import lorem_ipsum
 from django.core.files.base import ContentFile
 from django.db.models import URLField
+from django.template.defaultfilters import slugify
 
 from dilla import spam
 
@@ -78,8 +79,8 @@ def random_bool(field):
 @spam.global_handler('EmailField')
 def random_email(field):
     return "%s@%s.%s" % ( \
-             _random_words(1).replace("'",""),
-             _random_words(1).replace("'",""),
+             slugify(_random_words(1)),
+             slugify(_random_words(1)),
              random.choice(["com", "org", "net", "gov", "eu"])
              )
 
@@ -153,10 +154,9 @@ def random_file(field):
     def _random_textfile(field):
         log.debug("Generating text file")
         name = "dilla_%s.txt" % random_slug(field)
-        f = open(os.path.join(destination, name), "w+")
-        f.write(_random_words(10))
-        f.close()
-        return os.path.join(field.upload_to, name)
+        name = os.path.join(field.upload_to, name)
+        saved_name = field.storage.save(name, ContentFile(_random_words(10)))
+        return saved_name
 
     try:
         from django.db.models import ImageField
