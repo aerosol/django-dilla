@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.db.models import get_app, get_models
+from django.db.models import get_app, get_models, get_model
 from django.db import transaction
 import random
 import logging
+import traceback
 
 log = logging.getLogger(__name__)
 
@@ -38,14 +39,19 @@ class AbstractRecord(object):
         assert self.model is not None
         Klass = self.model
         self.obj = Klass()
+        #import ipdb;ipdb.set_trace()
         return self.obj
 
     def set_object_property(self, value):
         assert self.obj and self.is_field()
-        if self.many_to_many:
+        if self.many_to_many and self.obj and self.field.name and value:
             manager = getattr(self.obj, self.field.name)
             manager.add(*value)
-        setattr(self.obj, self.field.name, value)
+        if self.obj and self.field.name and value:
+            try:
+                setattr(self.obj, self.field.name, value)
+            except Exception, e:
+            	print e
         return self.obj
 
     def save(self):
@@ -183,7 +189,15 @@ class Dilla(object):
         apps = [(app, get_app(app)) for app in self.apps]
         for app_name, app_module in apps:
             self.appmodels[app_name] = []
-            self.appmodels[app_name].extend(get_models(app_module))
+
+            models = get_models(app_module)
+            for excluded_model in settings.DILLA_EXCLUDE_MODELS:
+                try:
+            	    models.remove(get_model(*excluded_model.split('.')))
+            	except ValueError:
+            		pass
+            self.appmodels[app_name].extend(models)
+            #import ipdb;ipdb.set_trace()
         log.debug('Preparing to spam following models: %s' % self.appmodels)
 
     def find_spam_handler(self, record):

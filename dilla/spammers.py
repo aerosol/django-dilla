@@ -9,7 +9,7 @@ import datetime
 from django.conf import settings
 from django.contrib.webdesign import lorem_ipsum
 from django.core.files.base import ContentFile
-from django.db.models import URLField
+from django.db.models import URLField, get_model
 from django.template.defaultfilters import slugify
 
 from dilla import spam
@@ -132,7 +132,6 @@ def random_file(field):
     using ImageFields, there is no point in providing
     alternate routine other than lazy import.
     """
-
     destination = os.path.join(field.storage.location, field.upload_to)
     if not os.path.exists(destination):
         os.makedirs(destination)
@@ -171,7 +170,22 @@ def random_file(field):
 @spam.global_handler('ForeignKey')
 def random_fk(field, limit=None):
     Related = field.rel.to
+    #import ipdb;ipdb.set_trace()
     log.debug('Trying to find related object: %s' % Related)
+
+    try:
+        excluded_models = [get_model(*m.split('.')) for m in settings.DILLA_EXCLUDE_MODELS]
+        #log.debug(excluded_models)
+
+        if Related in excluded_models:
+            log.info('skipping related object [%s] for %s' % (Related, field.name))
+            return None
+    except ValueError:
+        pass
+
+    log.info('Could not find any related objects for %s' % field.name)
+    return None
+
     try:
         query = Related.objects.all().order_by('?')
         if field.rel.limit_choices_to:

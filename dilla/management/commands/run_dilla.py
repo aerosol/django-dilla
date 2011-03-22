@@ -26,15 +26,15 @@ class Command(BaseCommand):
         else:
             apps = None
 
-        self.stdout.write('Dilla is going to spam your database. \
-                Do you wish to proceed? (Y/N)')
-        confirm = sys.stdin.readline().replace('\n', '').upper()
-        if not confirm == 'Y':
-            self.stdout.write('Aborting.\n')
-            sys.exit(1)
+        #self.stdout.write('Dilla is going to spam your database. \
+        #        Do you wish to proceed? (Y/N)')
+        #confirm = sys.stdin.readline().replace('\n', '').upper()
+        #if not confirm == 'Y':
+        #    self.stdout.write('Aborting.\n')
+        #    sys.exit(1)
 
         d = Dilla(apps=apps, \
-                cycles=int(options['cycles']))
+                cycles=int(options['cycles']), use_coin=False)
 
         apps, affected, filled, omitted = d.run()
 
