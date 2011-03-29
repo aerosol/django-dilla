@@ -39,7 +39,6 @@ class AbstractRecord(object):
         assert self.model is not None
         Klass = self.model
         self.obj = Klass()
-        #import ipdb;ipdb.set_trace()
         return self.obj
 
     def set_object_property(self, value):
@@ -197,7 +196,6 @@ class Dilla(object):
             	except ValueError:
             		pass
             self.appmodels[app_name].extend(models)
-            #import ipdb;ipdb.set_trace()
         log.debug('Preparing to spam following models: %s' % self.appmodels)
 
     def find_spam_handler(self, record):
@@ -208,8 +206,8 @@ class Dilla(object):
         # if there's no strict handler defined for a choice field,
         # use generic random
 
-        if record.field.choices:
-            return lambda x: random.choice(x.choices)[0]
+        #if record.field.choices:
+        #    return lambda x, y: random.choice(x.choices)[0]
 
         return self.spam_registry.get_handler(record, strict=False)
 
@@ -253,7 +251,7 @@ class Dilla(object):
 
             handler = self.find_spam_handler(record)
             if handler is not None:
-                value = handler(record.field)
+                value = handler(record, record.field)
                 if record.field.unique:
                     manager = record.model._default_manager
 
@@ -263,7 +261,7 @@ class Dilla(object):
                     for i in range(5):
                         try:
                             match = manager.get(**{record.field.name: value})
-                            value = handler(record.field)
+                            value = handler(record, record.field)
                         except record.model.DoesNotExist, e:
                             break
 
