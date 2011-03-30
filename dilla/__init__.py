@@ -206,8 +206,8 @@ class Dilla(object):
         # if there's no strict handler defined for a choice field,
         # use generic random
 
-        #if record.field.choices:
-        #    return lambda x, y: random.choice(x.choices)[0]
+        if record.field.choices:
+            return lambda x, y: random.choice(y.choices)[0]
 
         return self.spam_registry.get_handler(record, strict=False)
 

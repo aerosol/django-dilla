@@ -45,7 +45,7 @@ def random_words(record, field):
         return "http://%s.com/%s/?%s=%s" % tuple(_random_words(4).split(" "))
 
     max_length = field.max_length
-    words = _random_words(3)
+    words = _random_words(3).decode('utf8').encode('utf8')
     if max_length < len(words):
         return words[:max_length]
     return words
