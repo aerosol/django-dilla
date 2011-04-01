@@ -144,8 +144,6 @@ def random_file(record, field):
 
         if not os.path.exists(destination):
             os.makedirs(destination)
-
-        print 'creating ', destination
         return destination
 
     def _random_image(field):
