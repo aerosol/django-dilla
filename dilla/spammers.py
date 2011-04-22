@@ -201,12 +201,13 @@ def random_fk(record, field, limit=None):
             return query[:limit]
         return query[0]
     except IndexError, e:
-        log.info('Could not find any related objects for %s' % field.name)
+        log.warn('Could not find any related objects for %s' % field.name)
         return None
     except Exception, e:
         log.critical(str(e))
+        raise
 
 
 @spam.global_handler('ManyToManyField')
 def random_manytomany(record, field):
-    return random_fk(field, random.randint(1, 5))
+    return random_fk(record, field, random.randint(1, 5))
