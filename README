@@ -9,7 +9,6 @@ http://aerosol.github.com/django-dilla/
 TODO
 ----
 
-    * regster @ PyPI (currently old crappy code blocks the spot)
     * Support for unique_for_date, unique_for_month, unique_for_year
     * Support for XMLField, CommaSeparatedIntegerField
     * Test/Support for OneToOneField
