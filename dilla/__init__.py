@@ -197,7 +197,7 @@ class Dilla(object):
         for app_name, app_module in apps:
             self.appmodels[app_name] = []
             models = get_models(app_module)
-            models_to_exclude = settings.get('DILLA_EXCLUDE_MODELS', None)
+            models_to_exclude = getattr(settings, 'DILLA_EXCLUDE_MODELS', None)
             if models_to_exclude:
                 for excluded_model in models_to_exclude:
                     try:

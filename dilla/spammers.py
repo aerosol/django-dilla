@@ -180,7 +180,7 @@ def random_file(record, field):
 def random_fk(record, field, limit=None):
     Related = field.rel.to
     log.debug('Trying to find related object: %s' % Related)
-    models_to_exclude = settings.get('DILLA_EXCLUDE_MODELS', None)
+    models_to_exclude = getattr(settings, 'DILLA_EXCLUDE_MODELS', None)
     if models_to_exclude:
         try:
             excluded_models = [get_model(*m.split('.')) \

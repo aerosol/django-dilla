@@ -28,7 +28,7 @@ class Command(BaseCommand):
         dest='use_coin',
         default=False,
         help='Do not use coin toss'),
-    ),
+    )
 
     def handle(self, *args, **options):
         if options['apps'] is not None:
@@ -45,7 +45,7 @@ class Command(BaseCommand):
                 sys.exit(1)
 
         d = Dilla(apps=apps, \
-                cycles=int(options['cycles']), use_coin=options['use_coin'])
+                cycles=int(options['cycles']), use_coin=not options['use_coin'])
 
         apps, affected, filled, omitted = d.run()
 
