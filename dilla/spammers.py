@@ -133,10 +133,6 @@ def random_file(field):
     alternate routine other than lazy import.
     """
 
-    destination = os.path.join(field.storage.location, field.upload_to)
-    if not os.path.exists(destination):
-        os.makedirs(destination)
-
     def _random_image(field):
         log.debug("Generating identicon image")
         from identicon import identicon
@@ -147,14 +143,20 @@ def random_file(field):
         # using storage
         tmp_file = StringIO()
         icon.save(tmp_file, 'PNG')
-        name = os.path.join(field.upload_to, name)
+        # it would be better to have the actual instance here but this
+        # will have to do
+        instance = field.model()
+        name = field.generate_filename(instance, name)
         saved_name = field.storage.save(name, ContentFile(tmp_file.getvalue()))
         return saved_name
 
     def _random_textfile(field):
         log.debug("Generating text file")
         name = "dilla_%s.txt" % random_slug(field)
-        name = os.path.join(field.upload_to, name)
+        # it would be better to have the actual instance here but this
+        # will have to do
+        instance = field.model()
+        name = field.generate_filename(instance, name)
         saved_name = field.storage.save(name, ContentFile(_random_words(10)))
         return saved_name
 
