@@ -1,10 +1,6 @@
-README
-LICENSE
-MANIFEST.in
-setup.py
-dilla/__init__.py
-dilla/spammers.py
-dilla/management/__init__.py
-dilla/management/commands/__init__.py
-dilla/management/commands/run_dilla.py
-requirements.txt
+include README
+include LICENSE
+include MANIFEST.in
+include setup.py
+recursive-include dilla *.py
+include requirements.txt
