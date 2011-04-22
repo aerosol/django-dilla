@@ -67,10 +67,24 @@ populating data within any number of internal applications.</p>
 </ul>
 <h2>Installation & usage</h2>
 <ol>
-    <li><a href="#download">Download</a></li>
-    <li><pre>python setup.py install</pre>
+    <li>
+<p>NEW! Finally, we're on PyPI! Real men use pip, therefore you can do:</p>
+<pre>pip install django-dilla</pre>
+
+    <p>
+      Alternatively, you can download this project in either
+      <a href="http://github.com/aerosol/django-dilla/zipball/master">zip</a> or
+      <a href="http://github.com/aerosol/django-dilla/tarball/master">tar</a> formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/aerosol/django-dilla</pre>
+    </p>
+    <p>Manual installation will also require you to perform: <pre>python setup.py install</pre></p>
     </li>
-    <li>settings.py additions:<br/><pre>INSTALLED_APPS = ( ...
+    <li>
+<p>Edit settings.py to integrate into existing Django project:</p>
+    <pre>INSTALLED_APPS = ( ...
       'myapp',
       'dilla'
   )
@@ -126,15 +140,6 @@ $
 
 
 <h2><a name="download">Download</a></h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/aerosol/django-dilla/zipball/master">zip</a> or
-      <a href="http://github.com/aerosol/django-dilla/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/aerosol/django-dilla</pre>
-    </p>
 
     <div class="footer">
       get the source code on GitHub : <a href="http://github.com/aerosol/django-dilla">aerosol/django-dilla</a>
