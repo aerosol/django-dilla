@@ -21,7 +21,6 @@ except ImportError:
 
 log = logging.getLogger('dilla')
 
-# TODO this is definetelly not optimal
 dictionary = getattr(settings, 'DICTIONARY', "/usr/share/dict/words")
 if os.path.exists(dictionary) and \
         not getattr(settings, 'DILLA_USE_LOREM_IPSUM', False):
@@ -180,22 +179,18 @@ def random_file(record, field):
 @spam.global_handler('ForeignKey')
 def random_fk(record, field, limit=None):
     Related = field.rel.to
-    #import ipdb;ipdb.set_trace()
     log.debug('Trying to find related object: %s' % Related)
-
-    try:
-        excluded_models = [get_model(*m.split('.')) for m in settings.DILLA_EXCLUDE_MODELS]
-        #log.debug(excluded_models)
-
-        if Related in excluded_models:
-            log.info('skipping related object [%s] for %s' % (Related, field.name))
-            return None
-    except ValueError:
-        pass
-
-    log.info('Could not find any related objects for %s' % field.name)
-    return None
-
+    models_to_exclude = settings.get('DILLA_EXCLUDE_MODELS', None)
+    if models_to_exclude:
+        try:
+            excluded_models = [get_model(*m.split('.')) \
+                    for m in models_to_exclude]
+            if Related in excluded_models:
+                log.info('skipping related object [%s] for %s' % \
+                        (Related, field.name))
+                return None
+        except ValueError:
+            pass
     try:
         query = Related.objects.all().order_by('?')
         if field.rel.limit_choices_to:

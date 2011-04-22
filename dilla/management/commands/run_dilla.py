@@ -17,8 +17,18 @@ class Command(BaseCommand):
         action='store',
         dest='apps',
         default=None,
-        help='Comma-separated apps to spam. Default: settings.DILLA_APPS'),
-    )
+        help='Comma-separated app list to spam. Default: settings.DILLA_APPS'),
+    make_option('--no-input',
+        action='store_true',
+        dest='no_input',
+        default=False,
+        help='Do not ask user for spam confirmation'),
+    make_option('--no-coin',
+        action='store_true',
+        dest='use_coin',
+        default=False,
+        help='Do not use coin toss'),
+    ),
 
     def handle(self, *args, **options):
         if options['apps'] is not None:
@@ -26,15 +36,16 @@ class Command(BaseCommand):
         else:
             apps = None
 
-        #self.stdout.write('Dilla is going to spam your database. \
-        #        Do you wish to proceed? (Y/N)')
-        #confirm = sys.stdin.readline().replace('\n', '').upper()
-        #if not confirm == 'Y':
-        #    self.stdout.write('Aborting.\n')
-        #    sys.exit(1)
+        if not options['no_input']:
+            self.stdout.write('Dilla is going to spam your database. \
+                    Do you wish to proceed? (Y/N)')
+            confirm = sys.stdin.readline().replace('\n', '').upper()
+            if not confirm == 'Y':
+                self.stdout.write('Aborting.\n')
+                sys.exit(1)
 
         d = Dilla(apps=apps, \
-                cycles=int(options['cycles']), use_coin=False)
+                cycles=int(options['cycles']), use_coin=options['use_coin'])
 
         apps, affected, filled, omitted = d.run()
 
