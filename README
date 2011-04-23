@@ -2,27 +2,44 @@ Dilla is a multi-purpose general testing tool for automated
 database spamming, intented to use with projects built on top of Django,
 populating data within any number of internal applications.
 
-INSTALLATION/USAGE & MORE
--------------------------
+What's new in 0.2beta
+---------------------
+
+    * New commandline options:
+
+        --no-input - Stop user nagging (use with care)
+        --no-coin  - Do not use coin toss
+
+    * Callable support for FileField.upload_to
+    * Exclude models from being spammed (settings.DILLA_EXCLUDE_MODELS)
+    * Backwards incompatible:
+
+        Spammer functions interface extended.
+        AbstractRecord instance is passed as the first argument.
+
+        Old: spam_something(field): ...
+        New: spam_something(record, field): ...
+
+Installation & how to
+---------------------
 http://aerosol.github.com/django-dilla/
 
 TODO
 ----
 
-    * Support for unique_for_date, unique_for_month, unique_for_year
-    * Support for XMLField, CommaSeparatedIntegerField
-    * Test/Support for OneToOneField
-    * Optimize everything
-    * Contrib spamlibs for GeoDjango etc.
+    [minor] * Support for unique_for_date, unique_for_month, unique_for_year
+    [minor] * Support for XMLField, CommaSeparatedIntegerField
+    [major] * OneToOneField support
+    [minor] * Optimize everything
+    [minor] * Contrib spamlibs for GeoDjango etc.
 
+How to contribute?
+------------------
 
-Additional Info
----------------
-
-This project is PEP8 compilant.
-``identicon`` submodule copyrighted by Shin Adachi.
-Fork me on GitHub: http://aerosol.github.com/django-dilla/
-License: BSD License
+1. Fork me @ GitHub: http://aerosol.github.com/django-dilla/
+2. Code anything you find useful
+3. Add yourself to contributors list
+4. Send me a pull request
 
 Contributors
 ------------
@@ -31,3 +48,14 @@ Adolfo Fitoria (https://github.com/fitoria)
 Rob Berry (https://github.com/rob-b)
 Rafal Galczynski (https://github.com/rgsoda)
 Alfredo Aguirre (https://github.com/alfredo/)
+Philip Kalinsky (https://github.com/psychotechnik)
+Mark Lavin (https://github.com/mlavin)
+
+Additional Info
+---------------
+
+This project is PEP8 compilant.
+``identicon`` submodule copyrighted by Shin Adachi.
+License: BSD License
+
+
