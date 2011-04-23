@@ -45,7 +45,8 @@ class Command(BaseCommand):
                 sys.exit(1)
 
         d = Dilla(apps=apps, \
-                cycles=int(options['cycles']), use_coin=not options['use_coin'])
+                cycles=int(options['cycles']), \
+                use_coin=not options['use_coin'])
 
         apps, affected, filled, omitted = d.run()
 

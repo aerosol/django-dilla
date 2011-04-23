@@ -135,34 +135,24 @@ def random_file(record, field):
     #if not os.path.exists(destination):
     #    os.makedirs(destination)
 
-    def create_destination(obj, name=None):
-        if callable(field.upload_to):
-            destination = field.upload_to(obj, name)
-        else:
-            destination = os.path.join(field.storage.location, field.upload_to)
-
-        if not os.path.exists(destination):
-            os.makedirs(destination)
-        return destination
-
     def _random_image(field):
         log.debug("Generating identicon image")
         from identicon import identicon
         name = "dilla_%s.png" % random_slug(record, field)
-        name = create_destination(record.obj, name)
         icon = identicon.render_identicon( \
                 random.randint(5 ** 5, 10 ** 10), \
                 random.randint(64, 250))
         # using storage
         tmp_file = StringIO()
         icon.save(tmp_file, 'PNG')
+        name = field.generate_filename(record.obj, name)
         saved_name = field.storage.save(name, ContentFile(tmp_file.getvalue()))
         return saved_name
 
     def _random_textfile(field):
         log.debug("Generating text file")
         name = "dilla_%s.txt" % random_slug(record, field)
-        name = create_destination(record.obj, name)
+        name = field.generate_filename(record.obj, name)
         saved_name = field.storage.save(name, ContentFile(_random_words(10)))
         return saved_name
 
