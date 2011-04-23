@@ -5,7 +5,7 @@ use_setuptools()
 
 setup(
     name='django-dilla',
-    version='0.2dev',
+    version='0.2beta',
     author='Adam Rutkowski',
     author_email='adam@mtod.org',
     packages=find_packages(),
