@@ -92,6 +92,7 @@ populating data within any number of internal applications.</p>
 DICTIONARY = "/usr/share/dict/words"
 DILLA_USE_LOREM_IPSUM = False # set to True ignores dictionary
 DILLA_APPS = ['myapp', 'auth']
+DILLA_EXCLUDE_MODELS = ['myapp.Comments',]
 
 
 </pre></li>
@@ -116,6 +117,9 @@ and make sure Dilla will use them (settings.py again):
 DILLA_SPAMLIBS = ['myapp.my_custom_spamlib']
 </pre>
 </li>
+<li>For commandline help, do:
+<pre>./manage.py help run_dilla</pre>
+</li>
 <li>Time to spam!
 <pre>
 $ ./manage.py run_dilla --cycles=100
@@ -125,7 +129,6 @@ Dilla finished!
     502 field(s) ommited.
 $
 </pre>
-
 </li>
 </ol>
 <h2>Dependencies</h2>
