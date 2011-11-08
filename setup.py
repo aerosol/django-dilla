@@ -13,7 +13,7 @@ setup(
     license='BSD License',
     description='Ubercool database spammer for Django',
     long_description=open('README').read(),
-    download_url='https://github.com/aerosol/identicon',
+    download_url='https://github.com/aerosol/django-dilla/',
     install_requires=['identicon'],
     dependency_links = [
         'https://github.com/aerosol/identicon/tarball/master#egg=identicon'

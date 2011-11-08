@@ -216,7 +216,11 @@ class Dilla(object):
         # use generic random
 
         if record.field.choices:
-            return lambda x, y: random.choice(y.choices)[0]
+            # If it's an instance of itertools.tee, which django does
+            # if field._choices is a generator, then we can't take a
+            # random choice without first converting choices to a list.
+            choices = [c for c in record.field.choices]
+            return lambda x, y: random.choice(choices)[0]
 
         return self.spam_registry.get_handler(record, strict=False)
 
