@@ -1,2 +1,2 @@
-git+https://github.com/aerosol/identicon.git#egg=identicon
+git+git://github.com/aerosol/identicon.git#egg=identicon
 
